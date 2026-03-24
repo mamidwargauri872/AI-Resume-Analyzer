@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pdfplumber
+nltk
+pydantic
+python-multipart
+google-generativeai
+fastapi-mail
+motor
+email-validator
