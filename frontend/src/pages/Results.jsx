@@ -26,8 +26,9 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { analysisSchema } from '../utils/AnalysisSchema';
 
-function Results({ results: propResults }) {
+function Results({ results: propResults, setResultsData }) {
   const navigate = useNavigate();
   const { id } = useParams();
   const [results, setResults] = useState(propResults);
@@ -42,18 +43,35 @@ function Results({ results: propResults }) {
 
   useEffect(() => {
     const fetchResults = async () => {
-      if (!propResults && id) {
+      // If the ID in URL is different from what we're currently showing, force a refresh
+      const isNewId = results && id && (results._id !== id);
+      
+      if ((!propResults || isNewId) && id) {
         setLoading(true);
+        setResults(null); // Clear old results to avoid flashing
         try {
           const res = await axios.get(`http://localhost:8000/api/result/${id}`);
-          // The backend returns { _id, results: { ... }, ... }
-          setResults(res.data.results || res.data);
+          const rawData = res.data.results || res.data;
+          
+          // --- Zod Validation ---
+          const validation = analysisSchema.safeParse(rawData);
+          if (validation.success) {
+            setResults(validation.data);
+          } else {
+            console.error("Zod Validation Failed:", validation.error.format());
+            setResults(rawData); // Fallback to raw data if validation fails but we want to show something
+          }
         } catch (err) {
           console.error("Error fetching results:", err);
           setResults(null);
         } finally {
           setLoading(false);
         }
+      } else if (propResults) {
+        const rawData = propResults.results || propResults;
+        const validation = analysisSchema.safeParse(rawData);
+        setResults(validation.success ? validation.data : rawData);
+        setLoading(false);
       }
     };
     fetchResults();
@@ -111,7 +129,26 @@ function Results({ results: propResults }) {
     <div className="results-container animate-fade-in">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <div>
-          <h1 className="page-title">Analysis Results</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <h1 className="page-title" style={{ margin: 0 }}>Analysis Results</h1>
+            {results?.is_llm_enhanced && (
+              <span style={{ 
+                background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)', 
+                color: '#0369a1', 
+                padding: '4px 12px', 
+                borderRadius: '99px', 
+                fontSize: '0.85rem', 
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                border: '1px solid #bae6fd',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+              }}>
+                <Sparkles size={14} fill="#0ea5e9" /> Live AI Analysis
+              </span>
+            )}
+          </div>
           <p className="page-subtitle">Candidate: <span style={{ color: 'var(--primary)', fontWeight: 700 }}>{results?.name || 'Unknown'}</span></p>
         </div>
         <div style={{ display: 'flex', gap: '1rem' }}>

@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Upload, FileText, CheckCircle, AlertCircle, Sparkles, RefreshCw, ClipboardList, Loader2, Wand2 } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
+import { analysisSchema } from '../utils/AnalysisSchema';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function Analyzer({ setResultsData }) {
@@ -96,8 +97,18 @@ function Analyzer({ setResultsData }) {
     try {
       const res = await axios.post('http://localhost:8000/api/analyze', formData, { timeout: 60000 });
       console.log('DEBUG: Analysis result:', res.data);
+      
+      // --- Zod Validation ---
+      const rawData = res.data.results || res.data;
+      const validation = analysisSchema.safeParse(rawData);
+      
       if (setResultsData) {
-        setResultsData(res.data);
+        if (validation.success) {
+          setResultsData(validation.data);
+        } else {
+          console.warn("Zod Validation Failed:", validation.error.format());
+          setResultsData(rawData); // Fallback to raw data if validation fails but we want to continue
+        }
         fetchHistory(); // Refresh the local history list
         const resultId = res.data._id;
         if (resultId) {

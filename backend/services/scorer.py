@@ -292,61 +292,54 @@ async def get_gemini_analysis(resume_text: str, jd_text: str):
     try:
         print(f"DEBUG: Starting Gemini AI analysis (JD={len(jd_text)} chars, Resume={len(resume_text)} chars)...")
         from google import genai as google_genai
-
         client = google_genai.Client(api_key=GEMINI_API_KEY)
 
+        system_instruction = """
+        Act as a Senior Technical Lead and Hiring Manager.
+        Your Goal: Curate a high-stakes, 45-minute technical interview loop.
+        - ZERO TRIVIA: No 'What is X?' questions.
+        - JD-UNIQUE: Every question must be a unique scenario from the Job Description.
+        - 30 QUESTIONS: You MUST provide exactly 30 unique question/answer pairs.
+        - STAR METHOD: Answers must be 3-4 sentences in STAR format.
+        Return ONLY valid JSON.
+        """
+
         prompt = f"""
-        Act as a Principal Tech Recruiter and Career Strategist.
         Perform a Deep Match analysis between this Resume and Job Description.
 
         Job Description:
-        {jd_text[:2500]}
+        {jd_text[:3000]}
 
         Resume Text:
         {resume_text[:4500]}
-
-        ---
-        Your Goal:
-        1. Find EVERY technical skill, tool, and soft skill match.
-        2. Identify all critical gaps in resume vs JD.
-        3. Provide highly professional, DIVERSE, and ACTIONABLE advice.
-        4. Generate a 7-day roadmap targeting the EXACT missing skills found.
-        5. Generate 20 targeted interview questions based on this specific JD.
-        6. Generate a professional, high-conversion cover letter (250-450 words) that bridges the gap between the candidate's experience and this specific JD. It should be written in a tone that is confident, professional, and enthusiastic.
-
-        CRITICAL RULES:
-        - For suggestions: NO generic phrases. Give tactical, specific advice.
-        - For roadmap_7_day: Each day must reference specific missing skills by name.
-        - For interview_prep: Generate EXACTLY 20 questions — mix of technical (based on JD skills) and behavioral. Each answer should be 3-4 sentences using the STAR method.
 
         Return a JSON object with these EXACT keys:
         {{
           "match_score": integer 0-100,
           "matched_skills": ["skill1", "skill2"],
           "missing_skills": ["skill1", "skill2"],
-          "suggestions": ["specific suggestion 1", "specific suggestion 2", "specific suggestion 3", "specific suggestion 4"],
+          "suggestions": ["specific tactical insight 1", "specific tactical insight 2", "specific tactical insight 3", "specific tactical insight 4"],
           "name": "candidate name",
-          "roadmap": ["step1", "step2", "step3", "step4"],
+          "roadmap": ["strategic step 1", "strategic step 2"],
           "roadmap_7_day": [
-            {{"day": 1, "focus": "Focus area here", "tasks": ["task1", "task2", "task3"]}}
+            {{"day": 1, "focus": "Tech Area", "tasks": ["task 1", "task 2", "task 3"]}}
           ],
           "interview_prep": [
-            {{"question": "Question text here?", "answer": "Detailed answer using STAR method."}}
+            {{"question": "JD Scenario Question?", "answer": "Strategic STAR-format response."}}
           ],
-          "cover_letter": "A full-length professional cover letter text here..."
+          "cover_letter": "A high-conversion cover letter (400-550 words)."
         }}
-
-        Return ONLY valid JSON. No markdown. Start with {{ and end with }}.
         """
 
-        print("DEBUG: Sending prompt to Gemini...")
+        print("DEBUG: Sending request to Gemini (75s timeout window)...")
         response = await asyncio.wait_for(
             asyncio.to_thread(
                 client.models.generate_content,
                 model="gemini-2.0-flash",
-                contents=prompt
+                contents=prompt,
+                config={'system_instruction': system_instruction}
             ),
-            timeout=45.0
+            timeout=75.0
         )
         print("DEBUG: Gemini AI responded successfully.")
 
@@ -426,7 +419,7 @@ async def evaluate_candidate_async(candidate_skills: list, required_skills: list
 
     # 4. Wait for Gemini — if it works, use its richer output
     try:
-        ai_result = await asyncio.wait_for(ai_task, timeout=45.0)
+        ai_result = await asyncio.wait_for(ai_task, timeout=75.0)
         if ai_result:
             print(f"DEBUG: Merging Gemini results for {ai_result.get('name', candidate_name)}")
             final_matched = list(set(ai_result.get("matched_skills", []) + match_data["matched_skills"]))
