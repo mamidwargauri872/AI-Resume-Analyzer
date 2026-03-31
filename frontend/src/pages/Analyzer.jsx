@@ -41,9 +41,9 @@ function Analyzer({ setResultsData }) {
   const handleDrop = (e) => {
     e.preventDefault();
     const f = e.dataTransfer.files[0];
-    if (f?.type === 'application/pdf') { 
-      setFile(f); 
-      setError(''); 
+    if (f?.type === 'application/pdf') {
+      setFile(f);
+      setError('');
       if (location.pathname !== '/analyze/upload') navigate('/analyze/upload');
     }
     else setError('Please upload a valid PDF file.');
@@ -51,9 +51,9 @@ function Analyzer({ setResultsData }) {
 
   const handleFileChange = (e) => {
     const f = e.target.files[0];
-    if (f?.type === 'application/pdf') { 
-      setFile(f); 
-      setError(''); 
+    if (f?.type === 'application/pdf') {
+      setFile(f);
+      setError('');
       if (location.pathname !== '/analyze/upload') navigate('/analyze/upload');
     }
     else setError('Please upload a valid PDF file.');
@@ -84,7 +84,7 @@ function Analyzer({ setResultsData }) {
     setIsLoading(true);
     setError('');
     setProcessStep('Reading Resume PDF...');
-    
+
     setTimeout(() => setProcessStep('Extracting Skills & Entities...'), 1500);
     setTimeout(() => setProcessStep('Consulting Gemini AI (this may take 20s)...'), 4000);
 
@@ -127,33 +127,33 @@ function Analyzer({ setResultsData }) {
 
       <AnimatePresence>
         {error && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            className="glass-card" 
-            style={{ 
-                marginBottom: '1.5rem', 
-                padding: '1.25rem', 
-                borderRadius: '16px',
-                background: '#fef2f2',
-                border: '1px solid #fecaca',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem',
-                color: '#991b1b'
+            className="glass-card"
+            style={{
+              marginBottom: '1.5rem',
+              padding: '1.25rem',
+              borderRadius: '16px',
+              background: '#fef2f2',
+              border: '1px solid #fecaca',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1rem',
+              color: '#991b1b'
             }}
           >
             <div style={{ background: '#fee2e2', padding: '0.75rem', borderRadius: '12px', color: '#ef4444' }}>
-                <AlertCircle size={20} />
+              <AlertCircle size={20} />
             </div>
             <div style={{ flex: 1 }}>
               <p style={{ fontWeight: 800, margin: 0, fontSize: '1rem' }}>Analysis Blocked</p>
               <p style={{ fontSize: '0.85rem', margin: 0, opacity: 0.8 }}>{error}</p>
             </div>
-            <button 
-                onClick={() => setError('')}
-                style={{ background: 'none', border: 'none', color: '#b91c1c', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700 }}
+            <button
+              onClick={() => setError('')}
+              style={{ background: 'none', border: 'none', color: '#b91c1c', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700 }}
             >
-                Dismiss
+              Dismiss
             </button>
           </motion.div>
         )}
@@ -170,7 +170,7 @@ function Analyzer({ setResultsData }) {
         )}
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-          
+
           <div className="upload-section">
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
               <p style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>1. Resume (PDF)</p>
@@ -224,7 +224,7 @@ function Analyzer({ setResultsData }) {
                 <p style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>2. Job Description</p>
                 {jobDescription.trim().length > 20 && <CheckCircle size={14} color="var(--success)" />}
               </div>
-              <button 
+              <button
                 onClick={fillDemoJD}
                 style={{ background: 'var(--primary-light)', color: 'var(--primary)', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
               >
@@ -240,7 +240,7 @@ function Analyzer({ setResultsData }) {
               }}
               placeholder="Paste the job requirements, key skills, and responsibilities here..."
               value={jobDescription}
-              onChange={(e) => { setJobDescription(e.target.value); if(e.target.value.trim()) setShowJdHint(false); }}
+              onChange={(e) => { setJobDescription(e.target.value); if (e.target.value.trim()) setShowJdHint(false); }}
             />
           </div>
         </div>
@@ -259,12 +259,12 @@ function Analyzer({ setResultsData }) {
               </div>
             )}
           </div>
-          
+
           <button
             className={`analyze-btn ${isLoading ? 'loader-pulse' : ''}`}
             onClick={handleAnalyze}
             disabled={isLoading || isBtnDisabled}
-            style={{ 
+            style={{
               minWidth: 200,
               padding: '1rem 2.5rem',
               fontSize: '1.1rem'
@@ -280,10 +280,10 @@ function Analyzer({ setResultsData }) {
       </div>
 
       {/* Recent History Section */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="chart-card" 
+        className="chart-card"
         style={{ marginTop: '1.5rem', padding: '1.5rem' }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
@@ -311,8 +311,8 @@ function Analyzer({ setResultsData }) {
               </thead>
               <tbody>
                 {history.map((item, idx) => (
-                  <tr 
-                    key={item._id || idx} 
+                  <tr
+                    key={item._id || idx}
                     style={{ borderBottom: '1px solid var(--bg-main)', cursor: 'pointer', transition: 'background 0.2s' }}
                     onClick={() => navigate(`/analyze/results/${item._id}`)}
                     onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-main)'}
@@ -321,17 +321,17 @@ function Analyzer({ setResultsData }) {
                     <td style={{ padding: '0.875rem 0.5rem', color: 'var(--text-main)', fontWeight: 600 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                         <div style={{ padding: '6px', background: 'var(--primary-light)', borderRadius: '8px', color: 'var(--primary)' }}>
-                           <FileText size={14} />
+                          <FileText size={14} />
                         </div>
                         {item.filename}
                       </div>
                     </td>
                     <td style={{ padding: '0.875rem 0.5rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                         <div style={{ height: '6px', width: '60px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
-                            <div style={{ height: '100%', width: `${item.results.match_score}%`, background: item.results.match_score > 70 ? 'var(--success)' : '#f59e0b' }} />
-                         </div>
-                         <span style={{ fontWeight: 700, color: item.results.match_score > 70 ? 'var(--success)' : '#f59e0b' }}>{item.results.match_score}%</span>
+                        <div style={{ height: '6px', width: '60px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{ height: '100%', width: `${item.results.match_score}%`, background: item.results.match_score > 70 ? 'var(--success)' : '#f59e0b' }} />
+                        </div>
+                        <span style={{ fontWeight: 700, color: item.results.match_score > 70 ? 'var(--success)' : '#f59e0b' }}>{item.results.match_score}%</span>
                       </div>
                     </td>
                     <td style={{ padding: '0.875rem 0.5rem', color: 'var(--text-muted)', textAlign: 'right', fontSize: '0.825rem' }}>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { 
-  Upload, 
-  ArrowRight, 
-  Zap, 
-  Shield, 
+import {
+  Upload,
+  ArrowRight,
+  Zap,
+  Shield,
   BarChart3,
   ChevronRight,
   Brain,
@@ -48,7 +48,7 @@ const DashboardHome = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
       transition: { staggerChildren: 0.1 }
     }
@@ -60,7 +60,7 @@ const DashboardHome = () => {
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="dashboard-home"
       variants={containerVariants}
       initial="hidden"
@@ -78,36 +78,36 @@ const DashboardHome = () => {
 
       {/* Stats Overview */}
       <motion.div className="stats-mini-grid" variants={itemVariants}>
-         <div className="stat-card-glass">
-            <div className="stat-icon blue"><FileText size={20} /></div>
-            <div>
-              <p className="stat-label">Analyses</p>
-              <h4 className="stat-value">{stats.total_resumes}</h4>
-            </div>
-         </div>
-         <div className="stat-card-glass">
-            <div className="stat-icon purple"><Target size={20} /></div>
-            <div>
-              <p className="stat-label">Avg Match</p>
-              <h4 className="stat-value">{stats.avg_score}%</h4>
-            </div>
-         </div>
-         <div className="stat-card-glass">
-            <div className="stat-icon green"><Users size={20} /></div>
-            <div>
-              <p className="stat-label">Candidates</p>
-              <h4 className="stat-value">{stats.active_candidates}</h4>
-            </div>
-         </div>
+        <div className="stat-card-glass">
+          <div className="stat-icon blue"><FileText size={20} /></div>
+          <div>
+            <p className="stat-label">Analyses</p>
+            <h4 className="stat-value">{stats.total_resumes}</h4>
+          </div>
+        </div>
+        <div className="stat-card-glass">
+          <div className="stat-icon purple"><Target size={20} /></div>
+          <div>
+            <p className="stat-label">Avg Match</p>
+            <h4 className="stat-value">{stats.avg_score}%</h4>
+          </div>
+        </div>
+        <div className="stat-card-glass">
+          <div className="stat-icon green"><Users size={20} /></div>
+          <div>
+            <p className="stat-label">Candidates</p>
+            <h4 className="stat-value">{stats.active_candidates}</h4>
+          </div>
+        </div>
       </motion.div>
 
       {/* Main Content Grid */}
       <div className="home-content-grid">
-        
+
         {/* Left Column: Quick Actions & Stats */}
         <div className="home-main-col">
           {/* New Analysis CTA */}
-          <motion.div 
+          <motion.div
             className="cta-card-premium"
             variants={itemVariants}
             onClick={() => navigate('/analyze/upload')}
@@ -130,7 +130,7 @@ const DashboardHome = () => {
               <h3 className="section-title" style={{ margin: 0 }}>Recent Analyses</h3>
               <button onClick={() => navigate('/analyze/upload')} className="text-btn" style={{ fontSize: '0.85rem', color: '#3b82f6', fontWeight: 600 }}>+ New Analysis</button>
             </div>
-            
+
             {loading ? (
               <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>Loading history...</div>
             ) : history.length > 0 ? (

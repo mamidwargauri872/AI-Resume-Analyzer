@@ -13,23 +13,23 @@ const Logo = ({ size = 'medium', className = '', style = {} }) => {
   const height = sizes[size] || size;
 
   return (
-    <div className={`logo-container ${className}`} style={{ 
-      display: 'flex', 
-      alignItems: 'center', 
+    <div className={`logo-container ${className}`} style={{
+      display: 'flex',
+      alignItems: 'center',
       justifyContent: 'center',
       width: '100%',
-      ...style 
+      ...style
     }}>
-      <img 
-        src={logoImg} 
-        alt="AI Resume Analyser" 
-        style={{ 
-          height: height, 
-          width: 'auto', 
+      <img
+        src={logoImg}
+        alt="AI Resume Analyser"
+        style={{
+          height: height,
+          width: 'auto',
           maxWidth: '100%',
           objectFit: 'contain',
           borderRadius: '4px'
-        }} 
+        }}
       />
     </div>
   );

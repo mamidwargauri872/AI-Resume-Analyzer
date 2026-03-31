@@ -18,12 +18,12 @@ const Header = ({ onLogout }) => {
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    
+
     const handleProfileUpdate = () => {
       setUser(JSON.parse(localStorage.getItem('user')) || { name: 'User', email: 'user@example.com' });
     };
     window.addEventListener('profileUpdated', handleProfileUpdate);
-    
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       window.removeEventListener('profileUpdated', handleProfileUpdate);
@@ -57,8 +57,8 @@ const Header = ({ onLogout }) => {
                 <p className="p-email" style={{ fontSize: '0.75rem', opacity: 0.7 }}>{user.email}</p>
               </div>
               <div className="dropdown-divider" />
-              <button 
-                className="dropdown-item" 
+              <button
+                className="dropdown-item"
                 onClick={() => { setShowProfile(false); navigate('/analyze/settings'); }}
               >
                 <User size={16} /> <span>Profile Details</span>

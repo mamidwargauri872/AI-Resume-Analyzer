@@ -7,3 +7,6 @@ dist/
 build/
 .DS_Store
 .vscode/
+tmp/
+test_*.py
+list_*.py

@@ -169,13 +169,13 @@ const TemplateCard = ({ template, onView, onEdit }) => (
 
 const Section = ({ title, color, children, align = 'left' }) => (
   <div style={{ marginBottom: '1.25rem' }}>
-    <h3 style={{ 
-      fontSize: '0.9rem', 
-      textTransform: 'uppercase', 
-      letterSpacing: '0.1em', 
-      color, 
-      borderBottom: `1.5px solid ${color}40`, 
-      paddingBottom: '0.3rem', 
+    <h3 style={{
+      fontSize: '0.9rem',
+      textTransform: 'uppercase',
+      letterSpacing: '0.1em',
+      color,
+      borderBottom: `1.5px solid ${color}40`,
+      paddingBottom: '0.3rem',
       marginBottom: '0.6rem',
       fontWeight: 700,
       textAlign: align
@@ -277,8 +277,8 @@ const DataAnalystLayout = ({ fields, color }) => (
     </div>
     <Section title="Professional Summary" color={color}>{fields.summary}</Section>
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-       <Section title="Technical Skills" color={color}><p style={{ background: '#eee', padding: '1rem', borderRadius: '8px' }}>{fields.skills}</p></Section>
-       <Section title="Education" color={color}><pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>{fields.education}</pre></Section>
+      <Section title="Technical Skills" color={color}><p style={{ background: '#eee', padding: '1rem', borderRadius: '8px' }}>{fields.skills}</p></Section>
+      <Section title="Education" color={color}><pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>{fields.education}</pre></Section>
     </div>
     <Section title="Professional Experience" color={color}><pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>{fields.experience}</pre></Section>
     <Section title="Key Analytical Projects" color={color}><pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', fontWeight: 500 }}>{fields.projects}</pre></Section>
@@ -292,8 +292,8 @@ const DataAnalystLayout = ({ fields, color }) => (
 const FresherLayout = ({ fields, color }) => (
   <div style={{ padding: '2rem', background: 'white', minHeight: '297mm' }}>
     <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-       <h1 style={{ fontSize: '2rem', borderBottom: `2px solid ${color}`, display: 'inline-block', paddingBottom: '0.25rem' }}>{fields.name}</h1>
-       <p style={{ marginTop: '0.5rem' }}>{fields.contact}</p>
+      <h1 style={{ fontSize: '2rem', borderBottom: `2px solid ${color}`, display: 'inline-block', paddingBottom: '0.25rem' }}>{fields.name}</h1>
+      <p style={{ marginTop: '0.5rem' }}>{fields.contact}</p>
     </div>
     <Section title="Career Objective" color={color}>{fields.summary}</Section>
     <Section title="Academic Background" color={color}><pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', padding: '1rem', background: '#f9f9f9', borderRadius: '8px' }}>{fields.education}</pre></Section>
@@ -315,12 +315,12 @@ const ResumePreview = ({ template, fields }) => {
   };
 
   const LayoutComponent = layouts[template.id] || MinimalistLayout;
-  
+
   return (
-    <div className="resume-a4" style={{ 
-      width: '210mm', 
-      minHeight: '297mm', 
-      margin: '0', 
+    <div className="resume-a4" style={{
+      width: '210mm',
+      minHeight: '297mm',
+      margin: '0',
       position: 'relative',
       background: 'white'
     }}>
@@ -351,7 +351,7 @@ const Modal = ({ template, mode, onClose }) => {
       console.log('[Templates] Payload:', payload);
 
       const response = await axios.post('http://localhost:8000/api/templates/save', payload);
-      
+
       console.log('[Templates] Server Response:', response.data);
 
       if (response.data && response.data.status === 'success') {
@@ -390,15 +390,15 @@ const Modal = ({ template, mode, onClose }) => {
       }
 
       const opt = {
-        margin:       0,
-        filename:     `${template.name.replace(/\s+/g, '_')}_Resume.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { 
-          scale: 2, 
-          useCORS: true, 
+        margin: 0,
+        filename: `${template.name.replace(/\s+/g, '_')}_Resume.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
           logging: false
         },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       window.html2pdf().from(element).set(opt).save().then(() => {
@@ -415,7 +415,7 @@ const Modal = ({ template, mode, onClose }) => {
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div style={{ background: 'white', borderRadius: '24px', width: '100%', maxWidth: '1200px', height: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
-        
+
         {/* Modal Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.5rem', borderBottom: '1px solid #e2e8f0', background: 'white', zIndex: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -440,15 +440,15 @@ const Modal = ({ template, mode, onClose }) => {
 
         {/* Modal Body - Split View */}
         <div style={{ flex: 1, display: 'flex', minHeight: 0, background: '#f8fafc', position: 'relative', overflow: 'hidden' }}>
-          
+
           {/* 1. PDF CAPTURE TARGET (Renders on-screen only during download) */}
-          <div style={{ 
-            position: 'absolute', 
-            top: 0, 
-            left: isDownloading ? '0' : '-10000px', 
-            width: '100%', 
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: isDownloading ? '0' : '-10000px',
+            width: '100%',
             height: '100%',
-            zIndex: isDownloading ? 20000 : -100, 
+            zIndex: isDownloading ? 20000 : -100,
             opacity: isDownloading ? 1 : 0,
             background: 'rgba(255,255,255,0.95)',
             display: 'flex',
@@ -458,13 +458,13 @@ const Modal = ({ template, mode, onClose }) => {
             overflow: 'visible'
           }}>
             <h3 style={{ color: '#0f172a', marginBottom: '1rem' }}>Generating PDF...</h3>
-            <div id="resume-pdf-target" style={{ 
-              width: '210mm', 
+            <div id="resume-pdf-target" style={{
+              width: '210mm',
               minHeight: '297mm',
               background: 'white',
               boxShadow: '0 0 20px rgba(0,0,0,0.15)'
             }}>
-               <ResumePreview template={template} fields={fields} />
+              <ResumePreview template={template} fields={fields} />
             </div>
           </div>
 
@@ -512,9 +512,9 @@ const Modal = ({ template, mode, onClose }) => {
         {/* Downloading Overlay */}
         {isDownloading && (
           <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.9)', zIndex: 10000, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
-             <div style={{ width: '40px', height: '40px', border: '4px solid #f3f3f3', borderTop: '4px solid #2563eb', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-             <h3 style={{ margin: 0, color: '#0f172a' }}>Generating PDF...</h3>
-             <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+            <div style={{ width: '40px', height: '40px', border: '4px solid #f3f3f3', borderTop: '4px solid #2563eb', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+            <h3 style={{ margin: 0, color: '#0f172a' }}>Generating PDF...</h3>
+            <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
           </div>
         )}
       </div>
