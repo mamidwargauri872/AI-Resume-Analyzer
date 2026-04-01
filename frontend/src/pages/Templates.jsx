@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Layout, Download, Eye, Edit3, X, Save, CheckCircle } from 'lucide-react';
 import minimalistImg from '../assets/templates/minimalist.png';
@@ -522,8 +522,65 @@ const Modal = ({ template, mode, onClose }) => {
   );
 };
 
+const HistoryCard = ({ item, baseTemplate, onView, onEdit }) => (
+  <div style={{ background: 'white', borderRadius: '20px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', transition: 'transform 0.2s, box-shadow 0.2s' }}
+    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.12)'; }}
+    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)'; }}
+  >
+    <div style={{ background: baseTemplate.bg, height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
+        <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', padding: '0.2rem 0.6rem', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 600, color: '#475569' }}>
+            {new Date(item.created_at).toLocaleDateString()}
+        </div>
+        {baseTemplate.image ? (
+            <img src={baseTemplate.image} alt={baseTemplate.name} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} />
+        ) : null}
+    </div>
+    <div style={{ padding: '1.25rem' }}>
+      <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.25rem' }}>{item.fields?.name || "Untitled"}</h3>
+      <p style={{ fontSize: '0.82rem', color: '#64748b', marginBottom: '1rem' }}>Template: {item.template_name}</p>
+
+      <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <button onClick={() => { console.log(`[Templates] Viewing History`); onView(); }}
+          style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', padding: '0.55rem', borderRadius: '8px', background: baseTemplate.bg, color: baseTemplate.color, border: `1.5px solid ${baseTemplate.color}40`, fontWeight: 600, fontSize: '0.8rem', cursor: 'pointer' }}>
+          <Eye size={14} /> View
+        </button>
+        <button onClick={() => { console.log(`[Templates] Editing History`); onEdit(); }}
+          style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', padding: '0.55rem', borderRadius: '8px', background: baseTemplate.bg, color: baseTemplate.color, border: `1.5px solid ${baseTemplate.color}40`, fontWeight: 600, fontSize: '0.8rem', cursor: 'pointer' }}>
+          <Edit3 size={14} /> Continue Editing
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
 const Templates = () => {
   const [modal, setModal] = useState(null); // { template, mode }
+  const [activeTab, setActiveTab] = useState('all'); // 'all' or 'history'
+  const [history, setHistory] = useState([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+
+  const fetchHistory = async () => {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (!user.email) {
+          console.warn("No user email found in localStorage.");
+          return;
+      }
+      setLoadingHistory(true);
+      try {
+          const res = await axios.get(`http://localhost:8000/api/templates/history/${user.email}`);
+          setHistory(res.data);
+      } catch (err) {
+          console.error("Error fetching template history:", err);
+      } finally {
+          setLoadingHistory(false);
+      }
+  };
+
+  useEffect(() => {
+      if (activeTab === 'history') {
+          fetchHistory();
+      }
+  }, [activeTab]);
 
   return (
     <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
@@ -537,13 +594,43 @@ const Templates = () => {
         </p>
       </header>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-        {defaultTemplates.map(t => (
-          <TemplateCard key={t.id} template={t}
-            onView={tmpl => setModal({ template: tmpl, mode: 'view' })}
-            onEdit={tmpl => setModal({ template: tmpl, mode: 'edit' })} />
-        ))}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
+        <button onClick={() => setActiveTab('all')} style={{ padding: '0.6rem 2rem', borderRadius: '24px', background: activeTab === 'all' ? '#2563eb' : '#f1f5f9', color: activeTab === 'all' ? 'white' : '#475569', fontWeight: 700, border: 'none', cursor: 'pointer', transition: 'background 0.2s', boxShadow: activeTab === 'all' ? '0 4px 14px rgba(37, 99, 235, 0.3)' : 'none' }}>All Templates</button>
+        <button onClick={() => setActiveTab('history')} style={{ padding: '0.6rem 2rem', borderRadius: '24px', background: activeTab === 'history' ? '#2563eb' : '#f1f5f9', color: activeTab === 'history' ? 'white' : '#475569', fontWeight: 700, border: 'none', cursor: 'pointer', transition: 'background 0.2s', boxShadow: activeTab === 'history' ? '0 4px 14px rgba(37, 99, 235, 0.3)' : 'none' }}>My Saved Resumes</button>
       </div>
+
+      {activeTab === 'all' ? (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+          {defaultTemplates.map(t => (
+            <TemplateCard key={t.id} template={t}
+              onView={tmpl => setModal({ template: tmpl, mode: 'view' })}
+              onEdit={tmpl => setModal({ template: tmpl, mode: 'edit' })} />
+          ))}
+        </div>
+      ) : (
+        <div>
+          {loadingHistory ? (
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b', fontSize: '1.2rem', fontWeight: 600 }}>Loading your saved resumes...</div>
+          ) : history.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '20px', border: '1px dashed #cbd5e1' }}>
+              <h3 style={{ fontSize: '1.2rem', color: '#0f172a', marginBottom: '0.5rem' }}>No saved resumes yet</h3>
+              <p style={{ color: '#64748b' }}>Go to 'All Templates' and customize one to see it here.</p>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+              {history.map(item => {
+                const baseTemplate = defaultTemplates.find(t => t.name === item.template_name) || defaultTemplates[0];
+                const mergedTemplate = { ...baseTemplate, fields: item.fields };
+                return (
+                  <HistoryCard key={item._id} item={item} baseTemplate={baseTemplate}
+                    onView={() => setModal({ template: mergedTemplate, mode: 'view' })}
+                    onEdit={() => setModal({ template: mergedTemplate, mode: 'edit' })} />
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {modal && (
         <Modal template={modal.template} mode={modal.mode} onClose={() => setModal(null)} />

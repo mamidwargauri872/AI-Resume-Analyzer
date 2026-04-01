@@ -363,3 +363,21 @@ async def save_template_endpoint(request: Request):
     except Exception as e:
         print(f"[Templates] Save error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/templates/history/{email}")
+async def get_template_history(email: str):
+    from services.database import get_db
+    database = get_db()
+    if database is None:
+        return []
+    
+    try:
+        cursor = database["user_templates"].find({"user_email": email}).sort("created_at", -1)
+        history = await cursor.to_list(length=100)
+        for item in history:
+            item["_id"] = str(item["_id"])
+        return history
+    except Exception as e:
+        print(f"[Templates] History fetch error: {e}")
+        return []
+
