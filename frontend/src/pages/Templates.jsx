@@ -350,7 +350,7 @@ const Modal = ({ template, mode, onClose }) => {
       console.log('[Templates] POSTing to /api/templates/save...');
       console.log('[Templates] Payload:', payload);
 
-      const response = await axios.post('http://localhost:8000/api/templates/save', payload);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/templates/save`, payload);
 
       console.log('[Templates] Server Response:', response.data);
 
@@ -567,7 +567,7 @@ const Templates = () => {
       }
       setLoadingHistory(true);
       try {
-          const res = await axios.get(`http://localhost:8000/api/templates/history/${user.email}`);
+          const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/templates/history/${user.email}`);
           setHistory(res.data);
       } catch (err) {
           console.error("Error fetching template history:", err);

@@ -50,7 +50,7 @@ function Results({ results: propResults, setResultsData }) {
         setLoading(true);
         setResults(null); // Clear old results to avoid flashing
         try {
-          const res = await axios.get(`http://localhost:8000/api/result/${id}`);
+          const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/result/${id}`);
           const rawData = res.data.results || res.data;
           
           // --- Zod Validation ---

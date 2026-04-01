@@ -47,7 +47,7 @@ const Dashboard = () => {
     setError(null);
     try {
       const user = JSON.parse(localStorage.getItem('user')) || { email: 'demo@example.com' };
-      const res = await axios.get(`http://localhost:8000/api/dashboard-stats/${user.email}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/dashboard-stats/${user.email}`);
       setStats(res.data);
     } catch (err) {
       console.error(err);

@@ -31,7 +31,7 @@ const AIBuilder = () => {
       }
 
       console.log('[AI Builder] POSTing to /api/resume/generate...');
-      const response = await axios.post('http://localhost:8000/api/resume/generate', formData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/resume/generate`, formData);
       console.log('[AI Builder] Raw response:', response.data);
       
       if (response.data && response.data.status === 'success') {

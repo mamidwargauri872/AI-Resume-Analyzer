@@ -25,7 +25,7 @@ function Analyzer({ setResultsData }) {
   const fetchHistory = useCallback(async () => {
     setIsHistoryLoading(true);
     try {
-      const res = await axios.get(`http://localhost:8000/api/history/${user.email}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/history/${user.email}`);
       setHistory(res.data.slice(0, 5));
       console.log("[Analyzer] History refreshed:", res.data.length, "total.");
     } catch (err) {
@@ -95,7 +95,7 @@ function Analyzer({ setResultsData }) {
     formData.append('user_email', user.email);
 
     try {
-      const res = await axios.post('http://localhost:8000/api/analyze', formData, { timeout: 60000 });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/analyze`, formData, { timeout: 60000 });
       console.log('DEBUG: Analysis result:', res.data);
       
       // --- Zod Validation ---

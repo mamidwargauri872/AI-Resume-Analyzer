@@ -31,8 +31,8 @@ const DashboardHome = () => {
       setLoading(true);
       try {
         const [statsRes, historyRes] = await Promise.all([
-          axios.get(`http://localhost:8000/api/dashboard-stats/${user.email}`),
-          axios.get(`http://localhost:8000/api/history/${user.email}`)
+          axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/dashboard-stats/${user.email}`),
+          axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/history/${user.email}`)
         ]);
         setStats(statsRes.data);
         setHistory(historyRes.data.slice(0, 5));

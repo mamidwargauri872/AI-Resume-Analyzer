@@ -24,7 +24,7 @@ const AuthModal = ({ mode, onClose, onLogin }) => {
     if (form.password.length < 8) { setError('Password must be at least 8 characters.'); return; }
     setLoading(true); setError('');
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/auth/login', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: form.email, password: form.password })
@@ -44,7 +44,7 @@ const AuthModal = ({ mode, onClose, onLogin }) => {
     if (form.password !== form.confirmPassword) { setError('Passwords do not match.'); return; }
     setLoading(true); setError('');
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/auth/signup', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: form.name, email: form.email, password: form.password })
@@ -66,7 +66,7 @@ const AuthModal = ({ mode, onClose, onLogin }) => {
     e.preventDefault();
     setLoading(true); setError('');
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/auth/verify', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'}/api/auth/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: form.email, otp: otp.join('') })

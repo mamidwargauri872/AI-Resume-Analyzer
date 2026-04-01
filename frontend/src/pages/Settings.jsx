@@ -23,7 +23,7 @@ function Settings() {
     e.preventDefault();
     setLoading({ ...loading, profile: true });
     try {
-      const response = await axios.put('http://localhost:8000/api/auth/profile', {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/auth/profile`, {
         email: user.email,
         name: profile.name
       });
@@ -55,7 +55,7 @@ function Settings() {
     }
     setLoading({ ...loading, password: true });
     try {
-      const response = await axios.put('http://localhost:8000/api/auth/password', {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/auth/password`, {
         email: user.email,
         current_password: password.current,
         new_password: password.new
