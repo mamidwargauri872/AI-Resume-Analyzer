@@ -8,3 +8,4 @@ google-generativeai
 fastapi-mail
 motor
 email-validator
+aiofiles
